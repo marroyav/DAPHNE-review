@@ -1,0 +1,43 @@
+%\documentclass[draft]{dune}
+\documentclass[final]{dune}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+\usepackage{changepage}
+\usepackage{xspace}
+\usepackage{indentfirst}
+%\usepackage{siunitx}
+\input{units.tex}
+\usepackage[hidelinks]{hyperref}
+\input{defs.tex}
+\input{glossary.tex}
+\title{DAPHNE Review}
+\author{ }
+\date{ }
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+DAPHNE is the front-end board for the Single Phase PDS at DUNE experiment in FERMILAB. DAPHNE is designed to digitize analog signals coming from the Photon Detection Sensors in the Cold Electronics inside of the TPC cryostat. It is the first instrumentation module after the TPC interface, on the warm side. The next ideas will help to understand the architecture and the way to control it.
+
+%If the following information has wrong content you are free to modify or delete it.
+\rm
+\begin{adjustwidth}{2cm}{2cm} 
+
+\end{adjustwidth}
+\end{abstract}
+
+\input{Requirements}
+
+\input{Interfaces}
+
+%\input{DAPHNE_Board.tex}
+
+\input{Power_Consumption}
+
+\input{InterfacesSummary}
+
+%\bibliographystyle{plain}\it
+%\bibliography{bibfile}
+
+\end{document}

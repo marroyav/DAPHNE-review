@@ -1,0 +1,41 @@
+\section{DAPHNE Interfaces}
+\label{sec:interfaces}
+
+The FEB has a direct connection with 4 subsystems: Cold Electronics, DAQ, Slow control, and the cryostat interface.
+
+\subsection{COLD ELECTRONICS:}
+
+The digitization module consist of a differential to single converter, the AFE, and a readout control interface. The differential treatment of the signal between the cold electronics and DAPHNE is mandatory for the signal integrity. The constraints for this treatment are the distance to the cryostat, the impedance of the carrier cables and the frequency of the expected pulses.  A signal preconditioning has been done before into the cold environment by the active ganging. 
+
+DAPHNE supplies a bias voltage (56V), and a digitally controlled trim voltage (0V-4.096) to the cold electronics. Another digital voltage reference for the analog signal conversion is a voltage reference that moves the reference into the AFE. All these signals are driven by DACs attached to the FPGA.
+
+Actually the cables between DAPHNE and the cold electronics interface are HDMI cables supporting 4 analog channels each, for a total of 10 HDMI cables for one FEB. 
+
+\subsection{SLOW CONTROL: }
+
+\subsubsection{Fast Ethernet.}
+The Slow Control Connection consists of a Fast Ethernet Connection drived by the ST microcontroller.
+The output of the link is an SFP transceiver, allowing optical fiber, RJ45, and a TCP/IP support.
+This interface should Handle flags in the power requirements of the Board, the monitoring of the XADCs on the FPGA, and the General Error Handling of the FEB and Cold Electronics. 
+The FEB implements a server where a register matrix is refreshed in the microcontroller and in the FPGA.
+
+An error handling protocol must be designed.
+
+\subsubsection{Debugging Pins}
+There is a set of debugging pins to perform an event check in case of differences between the simulation and the hardware results.
+
+\subsection{DAQ:}
+
+\subsubsection{SFP x2 - Full Mode x2}
+Daphne counts on two SFP transceivers for data streaming. These are driven directly by the GTP transceivers in FPGA and are 4.8Gb/s capable in streaming mode. At DUNE final assembly only one of these will be used for data streaming. The use of two digital streaming enables us to perform loop corrections at the development level, and at the calibration rounds. 
+
+\subsubsection{Timing Recovery CDR}
+DAQ should provide a system clock of 62.5MHz for DAPHNE and should be connected at the CDR port (Optical fiber). 
+
+\subsubsection{LEMO Input}
+Nevertheless DAPHNE is prepared to work with an external clock input source at the LEMO connection. This connection will be used during the tests in absence of a system triggering clock, or with different rates at the streaming output like ICEBERG. 
+
+\subsubsection{LEMO Output}
+The LEMO output allows us to sync other modules sharing the clock of the FPGA. It could be the LEMO input clock or the one of the inner programmable clock on the FPGA. A control loop can be runned to check the clock integrity of some modules or signals.
+
+

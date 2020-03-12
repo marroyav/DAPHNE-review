@@ -1,0 +1,62 @@
+\section{Power Consumption}
+\label{sec:interfaces}
+
+Using an FPGA power estimator tool, we have estimated that our FPGA will consume about 3.5 Watts and that our AFEs at about 150mW/channel and at 40 channels will consume about 6 Watts. Our cooling fan is estimated to consume about 1.6W of power as well. We estimate that our board will consume about 26 W total. 
+
+\subsection{Power Distribution: }
+
+To generate the bias voltage, a Cockcroft-Walton (CW) Generator is used. +/-10V is generated from the secondary winding of the main power transformer on DAPHNE. This voltage is then fed to the CW Generator . It is possible to choose what bias voltage will be generated. +34V, +45V, +55V, +66V, and +77V can all be chosen.
+\\*
+\\* Voltages generated for the FPGA are described below in the Power-on Sequence subsection. Voltages generated for the various op-amps are shown in the power distribution diagram. 
+
+\subsection{Power Connectors: }
+
+The DAPHNE board power distribution has similarities to the Mu2E CRV Front End Board. One of the similarities is that they both have a power barrel connector for bench top testing. 
+But DAPHNE also needs a different power connector. There are some options. A bulkhead connector, wires, mounted male connector and female mate could be used similar to the alternative to HDMI connectors described above. 
+Another option is to use a molex through hole connector with a center pin of 0.156”. Such connectors have been used on boards for CDMS and Mu2E.
+
+\subsection{Cooling Fan: }
+
+For a cooling fan we have decided to use a brushless axial ball bearing flow 5V fan, EFB0405VHD-F00, by Delta Electronics.  We will use a 3 pin connector to connect to the fan: +5V, GND, and Frequency Generator (FG). The FG produces a square wave signal with a frequency that is proportional to the fan speed. This signal is sent to the microcontroller and can allow for detection of low supply voltage or blocked airflow. The use of this function will be optional, and programming will be needed within the microcontroller. 
+This fan also includes a surface mount fuse rated for 500mA, 0154.500DR. For now, the plan is to keep the fan constantly turned on once plugged in. This fan has a life expectancy of about 70,000 hours (7.99 years) under continuous operation at 104° F (40°C). 
+
+
+\subsection{FPGA Power-on Sequence: }
+
+The recommended power-on sequence to achieve minimum current draw for the GTP transceivers is:
+\\*
+\\*VCCINT (1V) – Internal Supply Voltage
+\\*VCCBRAM (1V) – Supply Voltage for block RAM memories
+\\*VMGTAVCC (1V) – Analog Supply for the GTP circuits
+\\*VMGTAVTT (1.2V) – Analog Supply for the GTP termination circuits
+\\*VCCAUX (1.8V) – Auxiliary Supply Voltage
+\\*VCCO (2.5V, 3.3V)– Output Drivers Supply Voltage For I/O Banks
+\\*
+\\*Both VMGTAVCC and VCCINT can be ramped simultaneously. The recommended
+power-off sequence is the reverse of the power-on sequence to achieve minimum current draw. The reason for using a linear regulator for  MGTAVCC is because it is very sensitive to noise.
+\\*
+\\*In the NEXYS video schematic, which uses the same FPGA, an input of 12V is used. In our case we will be using an input of about 8V (same as from Sten’s Mu2E FEB power scheme). 
+\\*
+\\*The three devices that power the FPGA are the:
+ ADP2325 which supplies 1V(5A) and 2.5V(500mA)
+LTC3868 which supplies 1.8V(5A) and 3.3V(3.5A)
+TPS7A91 which supplies 1V(1A) and 1.2V(1A). 
+The 1V is for VMGTAVCC and the  1.2V is for VMGTAVTT, both required for the GTP transceiver. VMGTAVCC is the Analog supply voltage for the GTP transmitter and receiver circuits. VMGTAVTT is the Analog supply voltage for the GTP transmitter and receiver termination circuits. 
+\\*
+\\*No external device is used to create this sequence. 
+The sequencing is done using the enable pins on the voltage regulators. And all of these voltages except VMGTAVTT and VMGTAVCC have a ramp time of 8ms. 
+ 
+
+\subsection{Cold Electronics Voltage: }
+
+For the cold electronics voltage we have decided to go with +3V. To generate this voltage both a buck converter, LTC3624, and linear regulator, TPS7A701, are used. The buck converter will take +5.5V coming from the power transformer and convert it into +3.3V. This +3.3V will not be used for any other part of the board or FPGA. The linear regulator will then convert the voltage to +3V. 
+Both the LTC3624 and TPS7A701 are adjustable so if a different cold electronics voltage was decided upon other than +3V then it could done by changing feed back resistors. 
+
+
+\subsection{Artix-7 vs Kintex-7: }
+
+To switch to the Kintex-7 FPGA with faster transceiver capabilities (9.6 Gb/s) will take some considerable work and cost. The cost of a Kintex-7 that can supply the 9.6 Gb/s speed is about \$1.5k. This is about 7 times as much as the Artix-7. The new FPGA would then have to be studied and all pins on the schematic would have to be rerouted. The power supply would also have to be redesigned to suit a more powerful FPGA. Also due to the faster speed of the device a different kind of pcb material may have to be used instead of FR-4. It is possible that material from Rogers Corp. may be needed to meet the needs of the 9.6 Gb/s transmissions. 
+
+\subsection{HDMI vs other Connector: }
+
+A possible scheme to switch to a bulkhead connector would be placing the bulkhead connectors along the wall of the 1U/2U box. In place of using 10 hdmi connectors, 10 bulkhead connectors would be used. The bulkhead would then need to be wired to a different female connector. Both ends of the wires will need to crimped onto both connectors. Then the female connector can mate with a male 90 degree connector mounted on the board. This way the board is easily detached to the 1U/2U box.
